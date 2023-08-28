@@ -13,6 +13,54 @@ import { ReactComponent as NightFog } from './../images/night-fog.svg';
 import { ReactComponent as NightPartiallyClearWithRain } from './../images/night-partially-clear-with-rain.svg';
 import { ReactComponent as NightSnowing } from './../images/night-snowing.svg';
 import { ReactComponent as NightThunderstorm } from './../images/night-thunderstorm.svg';
+import { useMemo } from 'react';
+
+const weatherTypes = {
+    isThunderstorm: [15, 16, 17, 18, 21, 22, 33, 34, 35, 36, 41],
+    isClear: [1],
+    isCloudyFog: [25, 26, 27, 28],
+    isCloudy: [2, 3, 4, 5, 6, 7],
+    isFog: [24],
+    isPartiallyClearWithRain: [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      19,
+      20,
+      29,
+      30,
+      31,
+      32,
+      38,
+      39,
+    ],
+    isSnowing: [23, 37, 42],
+  };
+  
+  const weatherIcons = {
+    day: {
+      isThunderstorm: <DayThunderstorm />,
+      isClear: <DayClear />,
+      isCloudyFog: <DayCloudyFog />,
+      isCloudy: <DayCloudy />,
+      isFog: <DayFog />,
+      isPartiallyClearWithRain: <DayPartiallyClearWithRain />,
+      isSnowing: <DaySnowing />,
+    },
+    night: {
+      isThunderstorm: <NightThunderstorm />,
+      isClear: <NightClear />,
+      isCloudyFog: <NightCloudyFog />,
+      isCloudy: <NightCloudy />,
+      isFog: <NightFog />,
+      isPartiallyClearWithRain: <NightPartiallyClearWithRain />,
+      isSnowing: <NightSnowing />,
+    },
+  };
 
 const IconContainer = styled.div`
     flex-basis: 30%;
@@ -22,10 +70,20 @@ const IconContainer = styled.div`
     }
 `;
 
-const WeatherIcon = () => (
-    <IconContainer>
-        <DayCloudy />
-    </IconContainer>
-)
+const weatherCode2Type = (weatherCode) => {
+    const [weatherType] = Object.entries(weatherTypes).find(([weatherType, weatherCodes]) => weatherCodes.includes(Number(weatherCode))) || [];
+    console.log(weatherType);
+    return weatherType;
+}
+
+const WeatherIcon = ({weatherCode, moment}) => {
+    const weatherType = useMemo(() => weatherCode2Type(weatherCode), [weatherCode]);
+    const WeatherIcon = weatherIcons[moment][weatherType];
+    return (
+        <IconContainer>
+            {WeatherIcon}
+        </IconContainer>
+    )
+}
 
 export default WeatherIcon;
